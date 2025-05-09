@@ -1,6 +1,6 @@
 # Usege
 
-## 环境变量
+## Environment Variables
 
 ```
 DIFY_API_URL="your dify knowledge api url"
