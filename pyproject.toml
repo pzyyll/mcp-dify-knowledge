@@ -1,0 +1,14 @@
+[project]
+name = "mcp-dify-knowledge"
+version = "0.1.0"
+description = "This is a simple MCP service for the Dify knowledge base."
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = ["httpx>=0.28.1", "mcp[cli]>=1.8.0"]
+
+[project.scripts]
+mcp-dify-knowledge = "mcp_dify_knowledge:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
