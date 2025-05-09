@@ -91,9 +91,7 @@ async def query_knowledge(params: QueryKnowledgeParams) -> list[TextContent]:
             request_headers["Content-Type"] = "application/json"
 
             response = await client.post(
-                url,
-                headers=request_headers,
-                json=json_payload
+                url, headers=request_headers, json=json_payload
             )
 
             response.raise_for_status()
@@ -113,7 +111,9 @@ async def query_knowledge(params: QueryKnowledgeParams) -> list[TextContent]:
             return [TextContent(type="text", text=error_message)]
 
         except Exception as e:
-            error_message = f"Querying Dify API encountered an unexpected error: {str(e)}"
+            error_message = (
+                f"Querying Dify API encountered an unexpected error: {str(e)}"
+            )
             return [TextContent(type="text", text=error_message)]
 
 
@@ -134,7 +134,3 @@ def main() -> None:
         print("Server shutting down...")
     except Exception as e:
         print(f"An error occurred: {e}")
-
-
-if __name__ == "__main__":
-    main()
