@@ -1,5 +1,4 @@
 import httpx
-import http
 import os
 import asyncio
 
@@ -80,7 +79,7 @@ async def list_knowledge(params: ListKnowledgeParams) -> list[TextContent]:
 
 
 async def query_knowledge(params: QueryKnowledgeParams) -> list[TextContent]:
-    """通过 Dify API 查询特定的知识库。"""
+    """Query a specific knowledge base through the Dify API."""
 
     transport = httpx.AsyncHTTPTransport(retries=3)
     async with httpx.AsyncClient(timeout=60, transport=transport) as client:
@@ -106,15 +105,15 @@ async def query_knowledge(params: QueryKnowledgeParams) -> list[TextContent]:
                 if hasattr(e_http.response, "text")
                 else "N/A"
             )
-            error_message = f"Dify API HTTP 错误: {e_http.response.status_code}. 响应: {response_text_summary}"
+            error_message = f"Dify API HTTP Error: {e_http.response.status_code}. Response: {response_text_summary}"
             return [TextContent(type="text", text=error_message)]
 
         except httpx.RequestError as e_req:
-            error_message = f"Dify API 请求错误: {str(e_req)}"
+            error_message = f"Dify API Request Error: {str(e_req)}"
             return [TextContent(type="text", text=error_message)]
 
         except Exception as e:
-            error_message = f"查询 Dify API 时发生意外错误: {str(e)}"
+            error_message = f"Querying Dify API encountered an unexpected error: {str(e)}"
             return [TextContent(type="text", text=error_message)]
 
 
