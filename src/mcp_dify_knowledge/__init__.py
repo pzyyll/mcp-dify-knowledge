@@ -1,4 +1,5 @@
 import httpx
+import http
 import os
 import asyncio
 
@@ -80,7 +81,9 @@ async def list_knowledge(params: ListKnowledgeParams) -> list[TextContent]:
 
 async def query_knowledge(params: QueryKnowledgeParams) -> list[TextContent]:
     """通过 Dify API 查询特定的知识库。"""
-    async with httpx.AsyncClient(timeout=60) as client:
+
+    transport = httpx.AsyncHTTPTransport(retries=3)
+    async with httpx.AsyncClient(timeout=60, transport=transport) as client:
         try:
             json_payload = params.model_dump(exclude_none=True, exclude={"id"})
             url = f"{DIFY_API_URL}/datasets/{params.id}/retrieve"
@@ -91,8 +94,9 @@ async def query_knowledge(params: QueryKnowledgeParams) -> list[TextContent]:
             response = await client.post(
                 url,
                 headers=request_headers,
-                json=json_payload,
+                json=json_payload
             )
+
             response.raise_for_status()
             return [TextContent(type="text", text=response.text)]
 
