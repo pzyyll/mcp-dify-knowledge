@@ -2,8 +2,7 @@ import httpx
 import os
 import asyncio
 
-from mcp.server import Server
-from mcp.server import stdio
+from mcp.server import Server, stdio
 from mcp.types import Tool, TextContent
 
 from typing import Annotated
@@ -12,7 +11,7 @@ from pydantic import BaseModel, Field
 mcp_server = Server("dify-knowledge")
 
 
-DIFY_API_URL = os.getenv("DIFY_API_URL", "https://api.dify.ai/v1")
+DIFY_API_URL = os.getenv("DIFY_API_URL", "your_dify_api_url_here")
 DIFY_API_KEY = os.getenv("DIFY_API_KEY", "your_api_key_here")
 
 headers = {"Authorization": f"Bearer {DIFY_API_KEY}"}
@@ -81,7 +80,7 @@ async def list_knowledge(params: ListKnowledgeParams) -> list[TextContent]:
 
 async def query_knowledge(params: QueryKnowledgeParams) -> list[TextContent]:
     """通过 Dify API 查询特定的知识库。"""
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(timeout=60) as client:
         try:
             json_payload = params.model_dump(exclude_none=True, exclude={"id"})
             url = f"{DIFY_API_URL}/datasets/{params.id}/retrieve"
@@ -111,7 +110,6 @@ async def query_knowledge(params: QueryKnowledgeParams) -> list[TextContent]:
             return [TextContent(type="text", text=error_message)]
 
         except Exception as e:
-            # 捕获所有其他类型的错误
             error_message = f"查询 Dify API 时发生意外错误: {str(e)}"
             return [TextContent(type="text", text=error_message)]
 
